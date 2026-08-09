@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>StudySphere AI — Plan smarter. Learn better. Revise confidently.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F6FB;
+  --surface:#FFFFFF;
+  --surface-2:#F0F0F9;
+  --ink:#1D1A2E;
+  --ink-soft:#3A3752;
+  --ink-muted:#726F86;
+  --primary:#5B4FE9;
+  --primary-dark:#4438C7;
+  --primary-tint:#EEEBFD;
+  --mint:#159E85;
+  --mint-tint:#E3F7F2;
+  --coral:#FF6B4A;
+  --coral-tint:#FFEAE4;
+  --amber:#E9A93B;
+  --amber-tint:#FBF0DD;
+  --blue:#2F8FE0;
+  --blue-tint:#E7F3FD;
+  --border:#E7E5F3;
+  --radius-lg:22px;
+  --radius-md:16px;
+  --radius-sm:10px;
+  --shadow-sm:0 2px 10px -4px rgba(29,26,46,.12);
+  --shadow-md:0 14px 32px -16px rgba(29,26,46,.22);
+  --font-display:'Fraunces',serif;
+  --font-body:'Inter',sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
+}
+[data-theme="dark"]{
+  --bg:#15131F;
+  --surface:#1E1B2B;
+  --surface-2:#252235;
+  --ink:#F1EFFA;
+  --ink-soft:#D6D3E6;
+  --ink-muted:#8F8BA8;
+  --primary-tint:#2A2550;
+  --mint-tint:#123832;
+  --coral-tint:#3E241D;
+  --amber-tint:#3A2E14;
+  --blue-tint:#152C3F;
+  --border:#332E48;
+  --shadow-sm:0 2px 10px -4px rgba(0,0,0,.4);
+  --shadow-md:0 14px 32px -16px rgba(0,0,0,.55);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{
+  font-family:var(--font-body);
+  background:var(--bg);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  transition:background .25s ease,color .25s ease;
+}
+a{color:inherit;}
+button{font-family:inherit;cursor:pointer;}
+input,select,textarea{font-family:inherit;}
+::selection{background:var(--primary);color:#fff;}
+.scroll-thin::-webkit-scrollbar{width:6px;height:6px;}
+.scroll-thin::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px;}
+
+/* ---------- layout ---------- */
+#app{display:flex;min-height:100vh;}
+.sidebar{
+  width:250px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;padding:24px 16px;position:sticky;top:0;height:100vh;
+}
+.brand{display:flex;align-items:center;gap:10px;padding:4px 8px 22px;}
+.brand-mark{
+  width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--mint));
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:var(--shadow-sm);
+}
+.brand-mark svg{width:20px;height:20px;}
+.brand-name{font-family:var(--font-display);font-weight:700;font-size:18px;line-height:1.1;}
+.brand-tag{font-size:10.5px;color:var(--ink-muted);letter-spacing:.02em;margin-top:2px;}
+.nav-list{list-style:none;display:flex;flex-direction:column;gap:3px;flex:1;}
+.nav-item{
+  display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;
+  color:var(--ink-muted);font-size:14.5px;font-weight:600;border:none;background:transparent;width:100%;
+  text-align:left;transition:background .15s,color .15s;
+}
+.nav-item svg{width:19px;height:19px;flex-shrink:0;}
+.nav-item:hover{background:var(--surface-2);color:var(--ink);}
+.nav-item.active{background:var(--primary-tint);color:var(--primary-dark);}
+[data-theme="dark"] .nav-item.active{color:#C9C3FF;}
+.sidebar-foot{border-top:1px solid var(--border);padding-top:14px;margin-top:8px;}
+.mini-profile{display:flex;align-items:center;gap:10px;padding:8px;border-radius:12px;cursor:pointer;transition:background .15s;}
+.mini-profile:hover{background:var(--surface-2);}
+.mini-avatar{
+  width:34px;height:34px;border-radius:50%;background:var(--mint-tint);color:var(--mint);
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;
+}
+.mini-name{font-size:13.5px;font-weight:700;}
+.mini-role{font-size:11px;color:var(--ink-muted);}
+
+main{flex:1;min-width:0;}
+.topbar{display:none;}
+.view-root{max-width:1180px;margin:0 auto;padding:32px 36px 100px;animation:fadein .3s ease;}
+@keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:22px;}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--primary);margin-bottom:6px;}
+.page-title{font-family:var(--font-display);font-size:30px;font-weight:700;letter-spacing:-.01em;}
+.page-sub{color:var(--ink-muted);font-size:14.5px;margin-top:4px;max-width:520px;}
+
+.btn{
+  display:inline-flex;align-items:center;gap:8px;border:none;border-radius:12px;padding:11px 18px;
+  font-weight:700;font-size:14px;transition:transform .12s,box-shadow .12s,background .12s;white-space:nowrap;
+}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:0 8px 18px -8px rgba(91,79,233,.55);}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-ghost{background:var(--surface-2);color:var(--ink-soft);}
+.btn-ghost:hover{background:var(--border);}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--ink-soft);}
+.btn-outline:hover{border-color:var(--primary);color:var(--primary);}
+.btn-danger{background:var(--coral-tint);color:var(--coral);}
+.btn-danger:hover{background:var(--coral);color:#fff;}
+.btn-sm{padding:7px 12px;font-size:12.5px;border-radius:9px;}
+.btn-icon{width:34px;height:34px;padding:0;justify-content:center;border-radius:10px;}
+.btn:disabled{opacity:.55;cursor:not-allowed;}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);}
+.card-pad{padding:22px;}
+.grid{display:grid;gap:18px;}
+.grid-2{grid-template-columns:1.4fr 1fr;}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+.grid-4{grid-template-columns:repeat(4,1fr);}
+@media(max-width:980px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:99px;}
+.badge-mint{background:var(--mint-tint);color:var(--mint);}
+.badge-coral{background:var(--coral-tint);color:var(--coral);}
+.badge-amber{background:var(--amber-tint);color:var(--amber);}
+.badge-primary{background:var(--primary-tint);color:var(--primary-dark);}
+.badge-blue{background:var(--blue-tint);color:var(--blue);}
+.badge-demo{background:var(--surface-2);color:var(--ink-muted);border:1px dashed var(--border);}
+
+.progress-track{height:9px;background:var(--surface-2);border-radius:99px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--primary),var(--mint));transition:width .5s ease;}
+
+.empty-state{text-align:center;padding:38px 20px;color:var(--ink-muted);}
+.empty-state svg{width:40px;height:40px;margin-bottom:10px;opacity:.55;}
+.empty-state p{font-size:13.5px;max-width:280px;margin:0 auto;}
+
+/* Quick actions */
+.qa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+@media(max-width:700px){.qa-grid{grid-template-columns:repeat(2,1fr);}}
+.qa-btn{
+  background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 10px;
+  display:flex;flex-direction:column;align-items:center;gap:8px;font-size:12.5px;font-weight:700;
+  color:var(--ink-soft);transition:transform .15s,box-shadow .15s,border-color .15s;
+}
+.qa-btn:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--primary);}
+.qa-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;}
+
+/* Task card */
+.task-card{
+  display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid var(--border);border-radius:16px;
+  background:var(--surface);transition:background .15s;
+}
+.task-card.completed{opacity:.55;}
+.task-check{
+  width:24px;height:24px;border-radius:8px;border:2px solid var(--border);flex-shrink:0;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .15s;
+}
+.task-check.checked{background:var(--mint);border-color:var(--mint);}
+.task-check svg{width:14px;height:14px;color:#fff;opacity:0;transition:opacity .1s;}
+.task-check.checked svg{opacity:1;}
+.task-main{flex:1;min-width:0;}
+.task-topic{font-weight:700;font-size:14.5px;}
+.task-topic.strike{text-decoration:line-through;}
+.task-meta{font-size:12px;color:var(--ink-muted);margin-top:2px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+/* sticky note (weak topic signature element) */
+.sticky-note{
+  position:relative;background:var(--amber-tint);border-radius:6px 6px 10px 10px;padding:20px 18px 18px;
+  transform:rotate(-1.1deg);box-shadow:0 10px 24px -14px rgba(29,26,46,.35);border:1px solid rgba(233,169,59,.35);
+}
+.sticky-note::before{
+  content:"";position:absolute;top:-9px;left:26px;width:52px;height:18px;
+  background:rgba(233,169,59,.4);border:1px solid rgba(233,169,59,.5);transform:rotate(-3deg);border-radius:2px;
+}
+.sticky-note .st-title{font-family:var(--font-display);font-weight:700;font-size:15.5px;margin-bottom:2px;}
+.sticky-note .st-body{font-size:12.5px;color:var(--ink-soft);margin-bottom:12px;}
+
+/* ring */
+.ring-wrap{position:relative;width:132px;height:132px;flex-shrink:0;}
+.ring-wrap svg{transform:rotate(-90deg);}
+.ring-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ring-num b{font-family:var(--font-mono);font-size:26px;}
+.ring-num span{font-size:10.5px;color:var(--ink-muted);font-weight:600;}
+
+/* streak flame chip */
+.streak-chip{display:flex;align-items:center;gap:9px;background:var(--coral-tint);border-radius:14px;padding:10px 14px;}
+.streak-chip b{font-family:var(--font-mono);font-size:20px;color:var(--coral);}
+
+/* forms */
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;}
+.field input[type=text],.field input[type=date],.field input[type=number],.field select,.field textarea{
+  width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:11px;background:var(--surface);
+  color:var(--ink);font-size:13.5px;outline:none;transition:border-color .15s;
+}
+.field textarea{resize:vertical;min-height:110px;line-height:1.5;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--primary);}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.chip-select{display:flex;gap:8px;flex-wrap:wrap;}
+.chip-opt{padding:8px 13px;border-radius:99px;border:1.5px solid var(--border);font-size:12.5px;font-weight:700;color:var(--ink-muted);background:var(--surface);}
+.chip-opt.active{background:var(--primary);border-color:var(--primary);color:#fff;}
+.hint-text{font-size:11.5px;color:var(--ink-muted);margin-top:4px;}
+.error-text{font-size:12px;color:var(--coral);margin-top:6px;font-weight:600;}
+
+/* modal */
+.modal-backdrop{
+  position:fixed;inset:0;background:rgba(20,17,34,.45);display:flex;align-items:center;justify-content:center;
+  z-index:100;padding:20px;animation:fadein .18s ease;backdrop-filter:blur(2px);
+}
+.modal-box{background:var(--surface);border-radius:20px;max-width:460px;width:100%;box-shadow:var(--shadow-md);max-height:88vh;display:flex;flex-direction:column;}
+.modal-head{padding:20px 22px 12px;display:flex;justify-content:space-between;align-items:center;}
+.modal-head h3{font-family:var(--font-display);font-size:19px;font-weight:700;}
+.modal-body{padding:0 22px 6px;overflow-y:auto;}
+.modal-foot{padding:16px 22px 22px;display:flex;gap:10px;justify-content:flex-end;}
+.modal-close{width:30px;height:30px;border-radius:9px;border:none;background:var(--surface-2);display:flex;align-items:center;justify-content:center;color:var(--ink-muted);}
+
+/* toast */
+#toast-root{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;align-items:center;}
+.toast{background:var(--ink);color:#fff;padding:11px 18px;border-radius:99px;font-size:13px;font-weight:600;box-shadow:var(--shadow-md);animation:toastin .25s ease;display:flex;align-items:center;gap:8px;}
+[data-theme="dark"] .toast{background:var(--surface-2);border:1px solid var(--border);}
+@keyframes toastin{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* tabs */
+.tabbar{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:20px;overflow-x:auto;}
+.tabbtn{padding:11px 16px;font-size:13.5px;font-weight:700;color:var(--ink-muted);border:none;background:none;border-bottom:2.5px solid transparent;white-space:nowrap;}
+.tabbtn.active{color:var(--primary);border-color:var(--primary);}
+
+/* chat */
+.chat-wrap{display:flex;flex-direction:column;gap:14px;max-height:calc(100vh - 430px);min-height:220px;overflow-y:auto;padding:4px 2px;}
+.msg{max-width:80%;padding:13px 16px;border-radius:16px;font-size:13.8px;line-height:1.55;}
+.msg-user{align-self:flex-end;background:var(--primary);color:#fff;border-bottom-right-radius:4px;}
+.msg-ai{align-self:flex-start;background:var(--surface-2);color:var(--ink);border-bottom-left-radius:4px;}
+.msg-ai b{color:var(--primary-dark);}
+[data-theme="dark"] .msg-ai b{color:#C9C3FF;}
+.typing{display:flex;gap:4px;align-self:flex-start;padding:13px 16px;background:var(--surface-2);border-radius:16px;}
+.typing span{width:6px;height:6px;border-radius:50%;background:var(--ink-muted);animation:blink 1.2s infinite;}
+.typing span:nth-child(2){animation-delay:.2s;}
+.typing span:nth-child(3){animation-delay:.4s;}
+@keyframes blink{0%,80%,100%{opacity:.25;}40%{opacity:1;}}
+
+/* flashcard */
+.flashcard{
+  height:210px;border-radius:20px;background:linear-gradient(135deg,var(--primary),#8B7FFF);color:#fff;
+  display:flex;align-items:center;justify-content:center;text-align:center;padding:26px;cursor:pointer;
+  font-family:var(--font-display);font-weight:600;font-size:17px;line-height:1.4;position:relative;
+  box-shadow:var(--shadow-md);user-select:none;
+}
+.flashcard.back{background:linear-gradient(135deg,var(--mint),#3FCBAF);}
+.flashcard .fc-tag{position:absolute;top:14px;left:16px;font-family:var(--font-body);font-size:10.5px;font-weight:700;opacity:.75;letter-spacing:.05em;text-transform:uppercase;}
+
+/* quiz */
+.quiz-q{border:1px solid var(--border);border-radius:16px;padding:16px 18px;margin-bottom:12px;}
+.quiz-opt{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:11px;border:1.5px solid var(--border);margin-top:8px;cursor:pointer;font-size:13.5px;}
+.quiz-opt:hover{border-color:var(--primary);}
+.quiz-opt.selected{border-color:var(--primary);background:var(--primary-tint);font-weight:700;}
+.quiz-opt.correct{border-color:var(--mint);background:var(--mint-tint);}
+.quiz-opt.wrong{border-color:var(--coral);background:var(--coral-tint);}
+.quiz-opt input{accent-color:var(--primary);}
+
+/* mobile nav */
+.mobile-nav{
+  display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);
+  z-index:50;padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+}
+.mobile-nav-list{display:flex;justify-content:space-between;}
+.mobile-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border:none;background:none;color:var(--ink-muted);font-size:10px;font-weight:700;}
+.mobile-nav-item svg{width:19px;height:19px;}
+.mobile-nav-item.active{color:var(--primary);}
+.mobile-topbar{display:none;position:sticky;top:0;z-index:40;background:var(--surface);border-bottom:1px solid var(--border);padding:14px 18px;align-items:center;justify-content:space-between;}
+
+@media(max-width:900px){
+  .sidebar{display:none;}
+  .mobile-nav{display:block;}
+  .mobile-topbar{display:flex;}
+  .view-root{padding:20px 16px 90px;}
+  .qa-grid{grid-template-columns:repeat(2,1fr);}
+  .page-head{align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main>
+    <div class="mobile-topbar" id="mobileTopbar"></div>
+    <div class="view-root" id="viewRoot"></div>
+  </main>
+  <nav class="mobile-nav" id="mobileNav"></nav>
+</div>
+<div id="modalRoot"></div>
+<div id="toast-root"></div>
+
+<script>
+/* =========================================================
+   STUDYSPHERE AI — self-contained SPA (vanilla JS, no build)
+   Data persists to localStorage. AI features run in a clearly
+   labelled DEMO MODE (heuristic, template-based) since no live
+   backend/API key is wired into this static artifact. The AI
+   calls are isolated in the AI_ENGINE object so a real API
+   route could replace its internals without touching the UI.
+   ========================================================= */
+
+const STORAGE_KEY = 'studysphere_ai_state_v1';
+const SUBJECT_PALETTE = ['#5B4FE9','#159E85','#FF6B4A','#E9A93B','#2F8FE0','#C24CF2','#16A34A','#DB2777'];
+
+const ICONS = {
+  dashboard:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></svg>',
+  planner:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>',
+  tutor:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a5 5 0 0 0-5 5v1a3 3 0 0 0 0 6h.5M12 3a5 5 0 0 1 5 5v1a3 3 0 0 1 0 6h-.5M9.5 15c0 3 1 5.5 2.5 5.5s2.5-2.5 2.5-5.5"/><circle cx="9" cy="10" r=".6" fill="currentColor"/><circle cx="15" cy="10" r=".6" fill="currentColor"/></svg>',
+  vault:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+  progress:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>',
+  settings:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.5 1z"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
+  trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>',
+  flame:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1 3-2 4-2 7a4 4 0 0 0 8 0c1.5 2 2 4 2 6a8 8 0 0 1-16 0c0-4 3-6 4-9 .5 1 1 2 2 2 0-2-1-4 2-6Z"/></svg>',
+  bolt:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 11 14 10 22 21 10 13 10 13 2"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>',
+  arrow:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>',
+  book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10.5 5 8 4 4 4v14c4 0 6.5 1 8 2.5 1.5-1.5 4-2.5 8-2.5V4c-4 0-6.5 1-8 2.5Z"/></svg>',
+  sparkle:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2 2M16 16l2 2M6 18l2-2M16 8l2-2"/></svg>'
+};
+
+/* ---------------- state ---------------- */
+function defaultState(){
+  return {
+    profile:{ name:'', grade:'9', dailyTime:120, notifications:true, theme:'light', onboarded:false },
+    subjects:[],
+    chapters:[],       // {id, subjectId, subjectName, name, notes, summary, flashcards, quiz, color}
+    planTasks:[],       // {id, subjectId, subjectName, chapterId, topic, date, estMinutes, difficulty, completed, color}
+    quizResults:[],      // {id, chapterId, chapterName, subjectName, date, score, total, wrong:[]}
+    weakTopics:[],        // {chapterId, chapterName, subjectName, wrongCount, accuracy, updated}
+    streakDates:[],
+    tutorHistory:[],
+    currentView:'dashboard',
+    vault:{ currentChapterId:null, tab:'notes' }
+  };
+}
+let state = loadState();
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return defaultState();
+    const parsed = JSON.parse(raw);
+    return Object.assign(defaultState(), parsed);
+  }catch(e){ return defaultState(); }
+}
+function saveState(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+}
+
+/* ---------------- helpers ---------------- */
+function uid(){ return 'id_'+Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4); }
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function addDays(dateStr,n){ const d=new Date(dateStr+'T00:00:00'); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
+function fmtDate(dateStr){
+  const d = new Date(dateStr+'T00:00:00');
+  const opt={weekday:'short',month:'short',day:'numeric'};
+  const t = todayStr();
+  if(dateStr===t) return 'Today';
+  if(dateStr===addDays(t,1)) return 'Tomorrow';
+  return d.toLocaleDateString('en-US',opt);
+}
+function escapeHtml(s){
+  return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function initials(name){ return (name||'S').trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
+function subjectColor(subjectId){ const s=state.subjects.find(x=>x.id===subjectId); return s?s.color:'#5B4FE9'; }
+function difficultyMinutes(d){ return d==='High'?45:d==='Medium'?30:20; }
+function toast(msg){
+  const root=document.getElementById('toast-root');
+  const el=document.createElement('div');
+  el.className='toast';
+  el.innerHTML = ICONS.check.replace('stroke-width="3"','stroke-width="3" style="width:13px;height:13px"') + '<span>'+escapeHtml(msg)+'</span>';
+  root.appendChild(el);
+  setTimeout(()=>{ el.style.opacity='0'; el.style.transition='opacity .3s'; setTimeout(()=>el.remove(),300); },2200);
+}
+
+/* ---------------- AI ENGINE (demo mode, isolated) ---------------- */
+/* All templated/heuristic logic lives here so a real backend call
+   (e.g. POST /api/tutor) could replace these function bodies later
+   without any change to the rendering code above. */
+const AI_ENGINE = {
+  mode:'demo', // 'demo' — no live model wired into this static artifact
+
+  tutorReply(subject, grade, question, mode){
+    const q = question.trim();
+    const subj = subject || 'this subject';
+    if(mode==='simple'){
+      return `Think of it this way: ${q.replace(/\?$/,'')} usually comes down to breaking a big idea into something familiar. `+
+      `In ${subj} for a Grade ${grade} level, the simplest way to picture it is by connecting it to something you already know from everyday life, then adding the technical name on top of that everyday picture. `+
+      `Try re-reading your notes on this topic and, for each sentence, ask "what's the everyday version of this?" — that's usually enough to make it click.`;
+    }
+    if(mode==='steps'){
+      return `Here's a step-by-step way to work through "${q}":\n\n`+
+      `1. Identify exactly what's being asked — underline the key term(s).\n`+
+      `2. Recall the definition or rule that applies (check your ${subj} notes for it).\n`+
+      `3. Write out what you already know that connects to it.\n`+
+      `4. Apply the rule/definition to the specific case in the question.\n`+
+      `5. Check your answer makes sense — does it match the units, scale, or logic expected?\n\n`+
+      `Work through each step on paper before checking if you're right.`;
+    }
+    if(mode==='hint'){
+      return `I won't give you the answer straight away — here's a nudge instead: look closely at the key word(s) in "${q}" and ask yourself which chapter or definition in your ${subj} notes that word appears in. `+
+      `Once you find it, re-read just that one definition slowly. Nine times out of ten, the answer is hiding in how that term is defined. Want a bigger hint, or do you want to try answering first?`;
+    }
+    if(mode==='practice'){
+      return `Here are a few practice questions in the same style as "${q}" (Grade ${grade}, ${subj}):\n\n`+
+      `• Explain the concept behind this in your own words, without looking at your notes.\n`+
+      `• Give one real-world example of it.\n`+
+      `• What would happen if one condition in this idea changed?\n`+
+      `• Write a one-sentence definition, then compare it with your notes.\n\n`+
+      `Try answering these out loud or on paper — that's the fastest way to find out what you actually know.`;
+    }
+    return 'Choose a mode above and I\'ll tailor my answer to it.';
+  },
+
+  followUps(){
+    return ['Can you give me a real example?','What\'s a common mistake here?','Quiz me on this topic'];
+  },
+
+  summarize(notes){
+    const sentences = notes.split(/(?<=[.?!])\s+/).map(s=>s.trim()).filter(s=>s.length>12);
+    if(sentences.length===0) return [];
+    const points = sentences.slice(0, Math.min(6, Math.max(3,Math.ceil(sentences.length*0.5))));
+    return points.map(s=> s.length>140 ? s.slice(0,137)+'…' : s);
+  },
+
+  flashcards(notes, chapterName){
+    const sentences = notes.split(/(?<=[.?!])\s+/).map(s=>s.trim()).filter(s=>s.length>10);
+    if(sentences.length===0) return [];
+    return sentences.slice(0,10).map((s,i)=>{
+      const clean = s.replace(/[.?!]$/,'');
+      return { id:uid(), front:`Explain: ${clean.length>70?clean.slice(0,67)+'…':clean}`, back:s };
+    });
+  },
+
+  STOP:new Set(['the','and','that','with','this','from','have','has','are','was','were','which','their','they','them','also','into','such','when','then','than','been','being','these','those','over','under','about','while','where','some','more','most','each','other','only','very','can','will','would','could','should','not','but','for','you','your']),
+
+  keyword(sentence){
+    const words = sentence.replace(/[^a-zA-Z\s]/g,'').split(/\s+/).filter(w=>w.length>5 && !this.STOP.has(w.toLowerCase()));
+    if(words.length===0) return null;
+    return words.sort((a,b)=>b.length-a.length)[0];
+  },
+
+  generateQuiz(chapter, config){
+    const notes = chapter.notes || '';
+    const sentences = notes.split(/(?<=[.?!])\s+/).map(s=>s.trim()).filter(s=>s.length>14);
+    const questions = [];
+    const count = config.count;
+    const wantMCQ = config.types.includes('mcq');
+    const wantTF = config.types.includes('tf');
+    const genericBank = [
+      {stem:`Which best describes a core idea in "${chapter.name}"?`, },
+    ];
+    let i=0;
+    while(questions.length < count){
+      const sentence = sentences[i % Math.max(sentences.length,1)] || `${chapter.name} covers several important ideas from your notes.`;
+      const type = wantMCQ && wantTF ? (questions.length%2===0?'mcq':'tf') : (wantMCQ?'mcq':'tf');
+      if(type==='mcq' && sentences.length>0){
+        const kw = this.keyword(sentence);
+        if(kw){
+          const blanked = sentence.replace(kw, '_____');
+          const distractorPool = sentences.filter((s,idx)=>idx!==(i%sentences.length)).map(s=>this.keyword(s)).filter(Boolean);
+          let distractors = [...new Set(distractorPool)].filter(d=>d.toLowerCase()!==kw.toLowerCase()).slice(0,3);
+          while(distractors.length<3){ distractors.push(['Concept','Process','Factor','Structure','Element'][distractors.length]+''); }
+          const options = [...distractors.slice(0,3), kw].sort(()=>Math.random()-0.5);
+          questions.push({ id:uid(), type:'mcq', q:`Fill in the blank: "${blanked}"`, options, answer:kw, topic:chapter.name });
+        } else {
+          questions.push({ id:uid(), type:'tf', q:sentence, answer:true, topic:chapter.name });
+        }
+      } else {
+        const makeFalse = Math.random()>0.5;
+        let statement = sentence;
+        let answer = true;
+        if(makeFalse){
+          const kw = this.keyword(sentence);
+          if(kw){ statement = sentence.replace(kw, kw.split('').reverse().join('')+'-like'); answer=false; }
+          else { statement = 'This statement is the opposite of what your notes say: ' + sentence; answer=false; }
+        }
+        questions.push({ id:uid(), type:'tf', q:statement, answer, topic:chapter.name });
+      }
+      i++;
+      if(i>50) break;
+    }
+    return questions.slice(0,count);
+  }
+};
+
+/* ---------------- domain logic ---------------- */
+function ensureSubject(name, existingId){
+  if(existingId) return existingId;
+  const found = state.subjects.find(s=>s.name.toLowerCase()===name.trim().toLowerCase());
+  if(found) return found.id;
+  const color = SUBJECT_PALETTE[state.subjects.length % SUBJECT_PALETTE.length];
+  const s = { id:uid(), name:name.trim(), color };
+  state.subjects.push(s);
+  return s.id;
+}
+
+function ensureChapter(subjectId, subjectName, topic){
+  let ch = state.chapters.find(c=>c.subjectId===subjectId && c.name.toLowerCase()===topic.trim().toLowerCase());
+  if(ch) return ch;
+  ch = { id:uid(), subjectId, subjectName, name:topic.trim(), notes:'', summary:[], flashcards:[], quiz:null, quizAttempts:0 };
+  state.chapters.push(ch);
+  return ch;
+}
+
+function addStudyItem({subjectExisting, subjectNew, topic, examDate, difficulty}){
+  const subjectId = ensureSubject(subjectNew && subjectNew.trim() ? subjectNew : (state.subjects.find(s=>s.id===subjectExisting)||{}).name || 'General', subjectExisting && !subjectNew ? subjectExisting : null);
+  const subj = state.subjects.find(s=>s.id===subjectId);
+  const chapter = ensureChapter(subjectId, subj.name, topic);
+  const isWeak = state.weakTopics.some(w=>w.chapterId===chapter.id);
+  const task = {
+    id:uid(), subjectId, subjectName:subj.name, chapterId:chapter.id, topic:topic.trim(),
+    examDate: examDate || null, estMinutes: difficultyMinutes(difficulty), difficulty,
+    completed:false, date: todayStr(), weak:isWeak
+  };
+  state.planTasks.push(task);
+  scheduleTasks();
+  saveState();
+}
+
+function scheduleTasks(){
+  const pending = state.planTasks.filter(t=>!t.completed);
+  const dailyBudget = Math.max(30, state.profile.dailyTime || 120);
+  // priority score: sooner exam + higher difficulty + weak topic bonus = higher priority
+  const scored = pending.map(t=>{
+    let score = 0;
+    if(t.examDate){
+      const days = Math.max(0,(new Date(t.examDate) - new Date(todayStr()))/86400000);
+      score += Math.max(0, 30 - days);
+    }
+    score += t.difficulty==='High'?12:t.difficulty==='Medium'?7:3;
+    if(t.weak) score += 15;
+    return {t, score};
+  }).sort((a,b)=>b.score-a.score);
+
+  const dayLoad = {};
+  let cursor = 0;
+  scored.forEach(({t})=>{
+    let day = todayStr();
+    let placed = false;
+    let guard=0;
+    while(!placed && guard<60){
+      day = addDays(todayStr(), cursor);
+      const used = dayLoad[day] || 0;
+      if(used + t.estMinutes <= dailyBudget){
+        dayLoad[day] = used + t.estMinutes;
+        t.date = day;
+        placed = true;
+      } else {
+        cursor++;
+      }
+      guard++;
+    }
+    if(!placed) t.date = day;
+  });
+}
+
+function toggleTaskComplete(id){
+  const t = state.planTasks.find(x=>x.id===id);
+  if(!t) return;
+  t.completed = !t.completed;
+  if(t.completed && !state.streakDates.includes(todayStr())) state.streakDates.push(todayStr());
+  saveState(); render();
+  toast(t.completed?'Task marked complete':'Task marked incomplete');
+}
+
+function deleteTask(id){
+  state.planTasks = state.planTasks.filter(x=>x.id!==id);
+  saveState(); render();
+  toast('Task deleted');
+}
+
+function computeStreak(){
+  const set = new Set(state.streakDates);
+  let count = 0, day = todayStr();
+  while(set.has(day)){ count++; day = addDays(day,-1); }
+  return count;
+}
+
+function afterQuizSubmit(chapter, questions, answers){
+  let correct = 0;
+  const wrongList = [];
+  questions.forEach(q=>{
+    const given = answers[q.id];
+    const isCorrect = String(given).toLowerCase() === String(q.answer).toLowerCase();
+    if(isCorrect) correct++; else wrongList.push(q);
+  });
+  const total = questions.length;
+  const pct = Math.round((correct/total)*100);
+  const result = { id:uid(), chapterId:chapter.id, chapterName:chapter.name, subjectName:chapter.subjectName, date:todayStr(), score:correct, total, pct };
+  state.quizResults.unshift(result);
+  chapter.quizAttempts = (chapter.quizAttempts||0)+1;
+
+  const existingWeak = state.weakTopics.find(w=>w.chapterId===chapter.id);
+  if(pct < 70){
+    if(existingWeak){ existingWeak.wrongCount += (total-correct); existingWeak.accuracy = pct; existingWeak.updated = todayStr(); }
+    else { state.weakTopics.push({ chapterId:chapter.id, chapterName:chapter.name, subjectName:chapter.subjectName, wrongCount:(total-correct), accuracy:pct, updated:todayStr() }); }
+    state.planTasks.forEach(t=>{ if(t.chapterId===chapter.id) t.weak = true; });
+  } else if(existingWeak && pct>=80){
+    state.weakTopics = state.weakTopics.filter(w=>w.chapterId!==chapter.id);
+    state.planTasks.forEach(t=>{ if(t.chapterId===chapter.id) t.weak = false; });
+  }
+  if(!state.streakDates.includes(todayStr())) state.streakDates.push(todayStr());
+  saveState();
+  return { result, wrongList, correct, total, pct };
+}
+
+function resetProgress(){
+  state.quizResults = [];
+  state.weakTopics = [];
+  state.streakDates = [];
+  state.planTasks.forEach(t=>t.completed=false);
+  state.chapters.forEach(c=>{ c.quiz=null; c.quizAttempts=0; });
+  saveState(); render();
+  toast('Progress has been reset');
+}
+
+/* ---------------- routing / render ---------------- */
+const NAV_ITEMS = [
+  {id:'dashboard', label:'Dashboard', icon:ICONS.dashboard},
+  {id:'planner', label:'StudySense', icon:ICONS.planner},
+  {id:'tutor', label:'Homework Hero', icon:ICONS.tutor},
+  {id:'vault', label:'ExamVault', icon:ICONS.vault},
+  {id:'progress', label:'Progress', icon:ICONS.progress},
+  {id:'settings', label:'Settings', icon:ICONS.settings},
+];
+
+function navigate(view, extra){
+  state.currentView = view;
+  if(extra) Object.assign(state.vault, extra);
+  saveState();
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+window.navigate = navigate;
+
+function render(){
+  document.body.setAttribute('data-theme', state.profile.theme==='dark' ? 'dark':'light');
+  renderSidebar();
+  renderMobileNav();
+  renderMobileTopbar();
+  const root = document.getElementById('viewRoot');
+  root.innerHTML = '';
+  const view = state.currentView;
+  if(view==='dashboard') root.appendChild(ViewDashboard());
+  else if(view==='planner') root.appendChild(ViewPlanner());
+  else if(view==='tutor') root.appendChild(ViewTutor());
+  else if(view==='vault') root.appendChild(ViewVault());
+  else if(view==='progress') root.appendChild(ViewProgress());
+  else if(view==='settings') root.appendChild(ViewSettings());
+}
+
+function renderSidebar(){
+  const el = document.getElementById('sidebar');
+  el.innerHTML = `
+    <div class="brand">
+      <div class="brand-mark">${ICONS.bolt.replace('currentColor','#fff')}</div>
+      <div>
+        <div class="brand-name">StudySphere<span style="color:var(--primary)">.</span></div>
+        <div class="brand-tag">Plan smarter. Learn better.</div>
+      </div>
+    </div>
+    <ul class="nav-list">
+      ${NAV_ITEMS.map(n=>`<li><button class="nav-item ${state.currentView===n.id?'active':''}" onclick="navigate('${n.id}')">${n.icon}${n.label}</button></li>`).join('')}
+    </ul>
+    <div class="sidebar-foot">
+      <div class="mini-profile" onclick="navigate('settings')">
+        <div class="mini-avatar">${initials(state.profile.name)}</div>
+        <div>
+          <div class="mini-name">${escapeHtml(state.profile.name || 'Student')}</div>
+          <div class="mini-role">Grade ${escapeHtml(state.profile.grade)}</div>
+        </div>
+      </div>
+    </div>`;
+}
+function renderMobileNav(){
+  const el = document.getElementById('mobileNav');
+  const items = NAV_ITEMS.filter(n=>n.id!=='settings');
+  el.innerHTML = `<div class="mobile-nav-list">
+    ${items.map(n=>`<button class="mobile-nav-item ${state.currentView===n.id?'active':''}" onclick="navigate('${n.id}')">${n.icon}<span>${n.label==='Homework Hero'?'Tutor':n.label==='StudySense'?'Plan':n.label}</span></button>`).join('')}
+    <button class="mobile-nav-item ${state.currentView==='settings'?'active':''}" onclick="navigate('settings')">${ICONS.settings}<span>Settings</span></button>
+  </div>`;
+}
+function renderMobileTopbar(){
+  const el = document.getElementById('mobileTopbar');
+  const cur = NAV_ITEMS.find(n=>n.id===state.currentView);
+  el.innerHTML = `<div style="display:flex;align-items:center;gap:8px;">
+      <div class="brand-mark" style="width:28px;height:28px;border-radius:9px;">${ICONS.bolt.replace('currentColor','#fff').replace('width:20px','width:14px')}</div>
+      <b style="font-family:var(--font-display);font-size:16px;">${cur?cur.label:'StudySphere'}</b>
+    </div>
+    <button class="btn-icon btn-ghost" style="border-radius:10px;" onclick="navigate('settings')">${ICONS.settings}</button>`;
+}
+
+/* ---------------- MODAL SYSTEM ---------------- */
+function openModal(title, bodyHtml, footHtml){
+  const root = document.getElementById('modalRoot');
+  root.innerHTML = `
+    <div class="modal-backdrop" id="modalBackdrop">
+      <div class="modal-box" onclick="event.stopPropagation()">
+        <div class="modal-head"><h3>${title}</h3><button class="modal-close" onclick="closeModal()">${ICONS.x}</button></div>
+        <div class="modal-body scroll-thin">${bodyHtml}</div>
+        <div class="modal-foot">${footHtml}</div>
+      </div>
+    </div>`;
+  document.getElementById('modalBackdrop').addEventListener('click', closeModal);
+}
+function closeModal(){ document.getElementById('modalRoot').innerHTML=''; }
+window.closeModal = closeModal;
+
+function confirmModal(title, message, onConfirm){
+  openModal(title, `<p style="font-size:13.5px;color:var(--ink-soft);line-height:1.6;">${escapeHtml(message)}</p>`,
+    `<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+     <button class="btn btn-danger" id="confirmBtn">Confirm</button>`);
+  document.getElementById('confirmBtn').onclick = ()=>{ closeModal(); onConfirm(); };
+}
+
+/* ---------------- SVG progress ring ---------------- */
+function ringSVG(pct, size, stroke, color){
+  size = size||132; stroke = stroke||12;
+  const r = (size-stroke)/2, c = 2*Math.PI*r;
+  const offset = c - (pct/100)*c;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <circle cx="${size/2}" cy="${size/2}" r="${r}" stroke="var(--surface-2)" stroke-width="${stroke}" fill="none"/>
+    <circle cx="${size/2}" cy="${size/2}" r="${r}" stroke="${color||'var(--primary)'}" stroke-width="${stroke}" fill="none"
+      stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${offset}" style="transition:stroke-dashoffset .6s ease"/>
+  </svg>`;
+}
+
+/* ================= DASHBOARD ================= */
+function ViewDashboard(){
+  const el = document.createElement('div');
+  const todayTasks = state.planTasks.filter(t=>t.date===todayStr()).sort((a,b)=> (b.difficulty==='High')-(a.difficulty==='High'));
+  const totalTasks = state.planTasks.length;
+  const doneTasks = state.planTasks.filter(t=>t.completed).length;
+  const overallPct = totalTasks ? Math.round((doneTasks/totalTasks)*100) : 0;
+  const streak = computeStreak();
+  const quizAvg = state.quizResults.length ? Math.round(state.quizResults.reduce((a,r)=>a+r.pct,0)/state.quizResults.length) : null;
+  const topWeak = [...state.weakTopics].sort((a,b)=>b.wrongCount-a.wrongCount)[0];
+
+  const subjProgress = state.subjects.map(s=>{
+    const ts = state.planTasks.filter(t=>t.subjectId===s.id);
+    const d = ts.filter(t=>t.completed).length;
+    return { s, pct: ts.length ? Math.round((d/ts.length)*100) : 0, count: ts.length };
+  });
+
+  el.innerHTML = `
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">Dashboard</div>
+        <h1 class="page-title">Hey${state.profile.name?', '+escapeHtml(state.profile.name):''}! Ready to study?</h1>
+        <p class="page-sub">Here's what's on your plate today, plus how you're tracking overall.</p>
+      </div>
+      <div class="streak-chip">${ICONS.flame.replace('currentColor','var(--coral)')}<div><b>${streak}</b><div style="font-size:10.5px;color:var(--ink-muted);font-weight:700;">day streak</div></div></div>
+    </div>
+
+    <div class="qa-grid" style="margin-bottom:26px;">
+      <button class="qa-btn" onclick="navigate('tutor')"><div class="qa-icon" style="background:var(--primary-tint);color:var(--primary-dark)">${ICONS.tutor}</div>Ask AI Tutor</button>
+      <button class="qa-btn" onclick="navigate('vault',{tab:'quiz'})"><div class="qa-icon" style="background:var(--mint-tint);color:var(--mint)">${ICONS.sparkle}</div>Take a Quiz</button>
+      <button class="qa-btn" onclick="navigate('vault',{tab:'notes'})"><div class="qa-icon" style="background:var(--blue-tint);color:var(--blue)">${ICONS.book}</div>My Revision</button>
+      <button class="qa-btn" onclick="navigate('planner')"><div class="qa-icon" style="background:var(--amber-tint);color:var(--amber)">${ICONS.planner}</div>Study Planner</button>
+    </div>
+
+    <div class="grid grid-2" style="margin-bottom:22px;align-items:start;">
+      <div class="card card-pad">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+          <h3 style="font-family:var(--font-display);font-size:18px;">Today's study plan</h3>
+          <button class="btn btn-ghost btn-sm" onclick="navigate('planner')">Open planner ${ICONS.arrow}</button>
+        </div>
+        <div id="todayTaskList" style="display:flex;flex-direction:column;gap:10px;"></div>
+      </div>
+
+      <div class="card card-pad" style="display:flex;flex-direction:column;align-items:center;gap:14px;">
+        <div class="ring-wrap">
+          ${ringSVG(overallPct)}
+          <div class="ring-num"><b>${overallPct}%</b><span>overall</span></div>
+        </div>
+        <div style="width:100%;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink-muted);margin-bottom:8px;">
+            <span>${doneTasks}/${totalTasks} tasks done</span><span>Quiz avg: ${quizAvg!==null?quizAvg+'%':'—'}</span>
+          </div>
+          ${subjProgress.length? subjProgress.map(sp=>`
+            <div style="margin-bottom:8px;">
+              <div style="display:flex;justify-content:space-between;font-size:11.5px;font-weight:700;margin-bottom:3px;">
+                <span style="display:flex;align-items:center;gap:6px;"><span class="dot" style="background:${sp.s.color}"></span>${escapeHtml(sp.s.name)}</span><span>${sp.pct}%</span>
+              </div>
+              <div class="progress-track"><div class="progress-fill" style="width:${sp.pct}%;background:${sp.s.color}"></div></div>
+            </div>`).join('') : `<p style="font-size:12px;color:var(--ink-muted);text-align:center;">Add a subject in StudySense to see progress here.</p>`}
+        </div>
+      </div>
+    </div>
+
+    <div id="weakTopicSlot"></div>
+  `;
+
+  const listEl = el.querySelector('#todayTaskList');
+  if(todayTasks.length===0){
+    listEl.innerHTML = `<div class="empty-state">${ICONS.planner.replace('currentColor','var(--ink-muted)')}<p>No tasks scheduled for today. Head to StudySense to build a study plan.</p></div>`;
+  } else {
+    todayTasks.forEach(t=> listEl.appendChild(TaskCard(t)));
+  }
+
+  const weakSlot = el.querySelector('#weakTopicSlot');
+  if(topWeak){
+    weakSlot.innerHTML = `
+      <div class="sticky-note" style="max-width:520px;">
+        <span class="badge badge-coral" style="margin-bottom:8px;">Your weak topic</span>
+        <div class="st-title">${escapeHtml(topWeak.chapterName)}</div>
+        <div class="st-body">${escapeHtml(topWeak.subjectName)} · You've answered ${topWeak.wrongCount} question${topWeak.wrongCount===1?'':'s'} incorrectly recently. Want to practice?</div>
+        <button class="btn btn-primary btn-sm" onclick="openWeakPractice('${topWeak.chapterId}')">Practice Now ${ICONS.arrow}</button>
+      </div>`;
+  }
+  return el;
+}
+
+function TaskCard(t){
+  const wrap = document.createElement('div');
+  wrap.className = 'task-card' + (t.completed?' completed':'');
+  wrap.innerHTML = `
+    <div class="task-check ${t.completed?'checked':''}" onclick="toggleTaskComplete('${t.id}')">${ICONS.check}</div>
+    <div class="task-main">
+      <div class="task-topic ${t.completed?'strike':''}">${escapeHtml(t.topic)}</div>
+      <div class="task-meta">
+        <span style="display:flex;align-items:center;gap:5px;"><span class="dot" style="background:${subjectColor(t.subjectId)}"></span>${escapeHtml(t.subjectName)}</span>
+        <span>${t.estMinutes} min</span>
+        <span class="badge ${t.difficulty==='High'?'badge-coral':t.difficulty==='Medium'?'badge-amber':'badge-mint'}">${t.difficulty} priority</span>
+        ${t.weak?'<span class="badge badge-coral">Weak topic</span>':''}
+      </div>
+    </div>
+    <button class="btn btn-outline btn-sm" onclick="navigate('vault',{currentChapterId:'${t.chapterId}',tab:'notes'})">Start</button>
+  `;
+  return wrap;
+}
+function openWeakPractice(chapterId){ navigate('vault',{currentChapterId:chapterId, tab:'quiz'}); }
+window.openWeakPractice = openWeakPractice;
+window.toggleTaskComplete = toggleTaskComplete;
+
+/* ================= PLANNER (StudySense) ================= */
+function ViewPlanner(){
+  const el = document.createElement('div');
+  const grouped = {};
+  [...state.planTasks].sort((a,b)=>a.date.localeCompare(b.date)).forEach(t=>{ (grouped[t.date]=grouped[t.date]||[]).push(t); });
+  const dates = Object.keys(grouped).sort();
+
+  el.innerHTML = `
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">StudySense AI</div>
+        <h1 class="page-title">Study Planner</h1>
+        <p class="page-sub">Add subjects, topics and exam dates — StudySense spreads them across your available time, prioritizing exams, difficulty and weak topics.</p>
+      </div>
+      <button class="btn btn-primary" onclick="openAddStudyItemModal()">${ICONS.plus} Add Study Item</button>
+    </div>
+    <div id="plannerBody"></div>
+  `;
+  const body = el.querySelector('#plannerBody');
+  if(dates.length===0){
+    body.innerHTML = `<div class="card card-pad"><div class="empty-state">${ICONS.planner.replace('currentColor','var(--ink-muted)')}<p>Your schedule is empty. Add a subject and topic to generate your first study plan.</p></div></div>`;
+    return el;
+  }
+  dates.forEach(date=>{
+    const section = document.createElement('div');
+    section.style.marginBottom = '22px';
+    const dayMinutes = grouped[date].reduce((a,t)=>a+t.estMinutes,0);
+    section.innerHTML = `<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px;">
+        <h3 style="font-family:var(--font-display);font-size:16.5px;">${fmtDate(date)}</h3>
+        <span style="font-size:11.5px;color:var(--ink-muted);font-family:var(--font-mono);">${dayMinutes} min planned</span>
+      </div>
+      <div class="grid" style="gap:10px;" id="tasks-${date}"></div>`;
+    body.appendChild(section);
+    const list = section.querySelector(`#tasks-${date}`);
+    grouped[date].forEach(t=>{
+      const row = document.createElement('div');
+      row.className = 'task-card' + (t.completed?' completed':'');
+      row.innerHTML = `
+        <div class="task-check ${t.completed?'checked':''}" onclick="toggleTaskComplete('${t.id}')">${ICONS.check}</div>
+        <div class="task-main">
+          <div class="task-topic ${t.completed?'strike':''}">${escapeHtml(t.topic)}</div>
+          <div class="task-meta">
+            <span style="display:flex;align-items:center;gap:5px;"><span class="dot" style="background:${subjectColor(t.subjectId)}"></span>${escapeHtml(t.subjectName)}</span>
+            <span>${t.estMinutes} min</span>
+            ${t.examDate?`<span>Exam ${fmtDate(t.examDate)}</span>`:''}
+            <span class="badge ${t.difficulty==='High'?'badge-coral':t.difficulty==='Medium'?'badge-amber':'badge-mint'}">${t.difficulty}</span>
+          </div>
+        </div>
+        <button class="btn-icon btn-ghost" onclick="openEditTaskModal('${t.id}')">${ICONS.edit}</button>
+        <button class="btn-icon btn-danger" onclick="confirmModal('Delete task','Remove &quot;${escapeHtml(t.topic)}&quot; from your plan?', ()=>deleteTask('${t.id}'))">${ICONS.trash}</button>
+      `;
+      list.appendChild(row);
+    });
+  });
+  return el;
+}
+window.confirmModal = confirmModal;
+
+function subjectOptionsHtml(selectedId){
+  return state.subjects.map(s=>`<option value="${s.id}" ${s.id===selectedId?'selected':''}>${escapeHtml(s.name)}</option>`).join('');
+}
+
+function openAddStudyItemModal(){
+  openModal('Add study item', `
+    <div class="field">
+      <label>Subject</label>
+      <select id="f-subject">
+        <option value="">— choose or add new below —</option>
+        ${subjectOptionsHtml()}
+      </select>
+    </div>
+    <div class="field">
+      <label>Or new subject name</label>
+      <input type="text" id="f-newsubject" placeholder="e.g. Biology">
+    </div>
+    <div class="field">
+      <label>Chapter / topic</label>
+      <input type="text" id="f-topic" placeholder="e.g. Cell Structure">
+      <div class="error-text" id="f-error" style="display:none;"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Exam date</label><input type="date" id="f-exam"></div>
+      <div class="field"><label>Difficulty</label>
+        <select id="f-diff"><option>Low</option><option selected>Medium</option><option>High</option></select>
+      </div>
+    </div>
+  `, `<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitAddStudyItem()">${ICONS.plus} Add to plan</button>`);
+}
+function submitAddStudyItem(){
+  const subjectExisting = document.getElementById('f-subject').value;
+  const subjectNew = document.getElementById('f-newsubject').value.trim();
+  const topic = document.getElementById('f-topic').value.trim();
+  const examDate = document.getElementById('f-exam').value;
+  const difficulty = document.getElementById('f-diff').value;
+  if(!topic || (!subjectExisting && !subjectNew)){
+    const err = document.getElementById('f-error');
+    err.style.display='block';
+    err.textContent = 'Please choose or create a subject, and enter a topic name.';
+    return;
+  }
+  addStudyItem({subjectExisting, subjectNew, topic, examDate, difficulty});
+  closeModal(); render();
+  toast('Study item added to your plan');
+}
+window.openAddStudyItemModal = openAddStudyItemModal;
+window.submitAddStudyItem = submitAddStudyItem;
+
+function openEditTaskModal(id){
+  const t = state.planTasks.find(x=>x.id===id);
+  if(!t) return;
+  openModal('Edit task', `
+    <div class="field"><label>Topic</label><input type="text" id="e-topic" value="${escapeHtml(t.topic)}"></div>
+    <div class="field-row">
+      <div class="field"><label>Exam date</label><input type="date" id="e-exam" value="${t.examDate||''}"></div>
+      <div class="field"><label>Difficulty</label>
+        <select id="e-diff">
+          ${['Low','Medium','High'].map(d=>`<option ${t.difficulty===d?'selected':''}>${d}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>Scheduled date</label><input type="date" id="e-date" value="${t.date}"></div>
+  `, `<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitEditTask('${id}')">Save changes</button>`);
+}
+function submitEditTask(id){
+  const t = state.planTasks.find(x=>x.id===id);
+  t.topic = document.getElementById('e-topic').value.trim() || t.topic;
+  t.examDate = document.getElementById('e-exam').value;
+  t.difficulty = document.getElementById('e-diff').value;
+  t.estMinutes = difficultyMinutes(t.difficulty);
+  t.date = document.getElementById('e-date').value || t.date;
+  saveState(); closeModal(); render();
+  toast('Task updated');
+}
+window.openEditTaskModal = openEditTaskModal;
+window.submitEditTask = submitEditTask;
+window.deleteTask = deleteTask;
+
+/* ================= TUTOR (Homework Hero) ================= */
+let tutorLoading = false;
+function ViewTutor(){
+  const el = document.createElement('div');
+  el.innerHTML = `
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">Homework Hero</div>
+        <h1 class="page-title">AI Tutor</h1>
+        <p class="page-sub">Ask a question, pick a mode, and Homework Hero will guide you — not just hand you the answer. <span class="badge badge-demo">Demo Mode</span></p>
+      </div>
+    </div>
+    <div class="grid grid-2" style="align-items:start;">
+      <div class="card card-pad">
+        <div class="field-row">
+          <div class="field"><label>Subject</label>
+            <select id="t-subject">
+              ${['Maths','Science','Biology','History','Geography','English','Computer Studies','Other'].map(s=>`<option>${s}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field"><label>Class / Grade</label>
+            <select id="t-grade">${Array.from({length:12},(_,i)=>i+1).map(g=>`<option value="${g}" ${String(g)===String(state.profile.grade)?'selected':''}>Grade ${g}</option>`).join('')}</select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Your question</label>
+          <textarea id="t-question" placeholder="e.g. What is photosynthesis?" style="min-height:80px;"></textarea>
+          <div class="error-text" id="t-error" style="display:none;">Type a question first — I need something to help you with.</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+          <button class="btn btn-primary btn-sm" onclick="askTutor('simple')">Explain Simply</button>
+          <button class="btn btn-outline btn-sm" onclick="askTutor('steps')">Step-by-Step</button>
+          <button class="btn btn-outline btn-sm" onclick="askTutor('hint')">Give Me a Hint</button>
+          <button class="btn btn-outline btn-sm" onclick="askTutor('practice')">Practice Me</button>
+        </div>
+        <div id="followups" style="margin-top:14px;display:flex;gap:6px;flex-wrap:wrap;"></div>
+      </div>
+      <div class="card card-pad" style="display:flex;flex-direction:column;">
+        <h3 style="font-family:var(--font-display);font-size:16px;margin-bottom:12px;">Session chat</h3>
+        <div class="chat-wrap scroll-thin" id="chatWrap"></div>
+      </div>
+    </div>
+  `;
+  renderChat(el);
+  return el;
+}
+function renderChat(root){
+  root = root || document;
+  const wrap = root.querySelector ? root.querySelector('#chatWrap') : document.getElementById('chatWrap');
+  if(!wrap) return;
+  wrap.innerHTML = '';
+  if(state.tutorHistory.length===0 && !tutorLoading){
+    wrap.innerHTML = `<div class="empty-state">${ICONS.tutor.replace('currentColor','var(--ink-muted)')}<p>Ask your first question — choose a mode above and Homework Hero will respond here.</p></div>`;
+    return;
+  }
+  state.tutorHistory.forEach(m=>{
+    const bubble = document.createElement('div');
+    bubble.className = 'msg ' + (m.role==='user'?'msg-user':'msg-ai');
+    if(m.role==='user') bubble.innerHTML = `<b style="opacity:.85;font-size:11px;text-transform:uppercase;letter-spacing:.04em;">${m.mode}</b><br>${escapeHtml(m.text)}`;
+    else bubble.innerHTML = escapeHtml(m.text).replace(/\n/g,'<br>');
+    wrap.appendChild(bubble);
+  });
+  if(tutorLoading){
+    const t = document.createElement('div');
+    t.className='typing';
+    t.innerHTML = '<span></span><span></span><span></span>';
+    wrap.appendChild(t);
+  }
+  wrap.scrollTop = wrap.scrollHeight;
+}
+function askTutor(mode){
+  const qEl = document.getElementById('t-question');
+  const question = qEl.value.trim();
+  const errEl = document.getElementById('t-error');
+  if(!question){ errEl.style.display='block'; return; }
+  errEl.style.display='none';
+  const subject = document.getElementById('t-subject').value;
+  const grade = document.getElementById('t-grade').value;
+  const modeLabels = {simple:'Explain Simply', steps:'Step-by-Step', hint:'Hint', practice:'Practice Me'};
+  state.tutorHistory.push({role:'user', mode:modeLabels[mode], text:question});
+  saveState();
+  tutorLoading = true;
+  renderChat();
+  document.querySelectorAll('#followups').forEach(f=>f.innerHTML='');
+  setTimeout(()=>{
+    let text;
+    try{
+      text = AI_ENGINE.tutorReply(subject, grade, question, mode) + '\n\n— Demo Mode: templated tutor logic, not a live AI model.';
+    }catch(e){
+      text = 'Something went wrong generating a response. Please try rephrasing your question.';
+    }
+    tutorLoading = false;
+    state.tutorHistory.push({role:'ai', mode, text});
+    saveState();
+    renderChat();
+    const fu = document.getElementById('followups');
+    if(fu){
+      fu.innerHTML = AI_ENGINE.followUps().map(f=>`<button class="chip-opt" onclick="document.getElementById('t-question').value='${f.replace(/'/g,"\\'")}'">${f}</button>`).join('');
+    }
+    qEl.value='';
+  }, 750);
+}
+window.askTutor = askTutor;
+
+/* ================= EXAMVAULT ================= */
+function ViewVault(){
+  const el = document.createElement('div');
+  const chapterId = state.vault.currentChapterId;
+  const chapter = state.chapters.find(c=>c.id===chapterId);
+
+  if(!chapter){
+    el.innerHTML = `
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">ExamVault</div>
+          <h1 class="page-title">Revision Center</h1>
+          <p class="page-sub">Store notes, generate summaries and flashcards, then test yourself with a quiz.</p>
+        </div>
+        <button class="btn btn-primary" onclick="openAddChapterModal()">${ICONS.plus} Add Chapter</button>
+      </div>
+      <div id="vaultList"></div>
+    `;
+    const listEl = el.querySelector('#vaultList');
+    if(state.subjects.length===0){
+      listEl.innerHTML = `<div class="card card-pad"><div class="empty-state">${ICONS.vault.replace('currentColor','var(--ink-muted)')}<p>No subjects yet. Add a chapter to start building your revision vault.</p></div></div>`;
+      return el;
+    }
+    state.subjects.forEach(s=>{
+      const chapters = state.chapters.filter(c=>c.subjectId===s.id);
+      const block = document.createElement('div');
+      block.style.marginBottom='24px';
+      block.innerHTML = `<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span class="dot" style="background:${s.color};width:11px;height:11px;"></span>
+          <h3 style="font-family:var(--font-display);font-size:17px;">${escapeHtml(s.name)}</h3>
+        </div>
+        <div class="grid grid-3" id="ch-${s.id}"></div>`;
+      listEl.appendChild(block);
+      const grid = block.querySelector(`#ch-${s.id}`);
+      if(chapters.length===0){ grid.innerHTML = `<div class="card card-pad" style="grid-column:1/-1;"><p style="font-size:12.5px;color:var(--ink-muted);">No chapters yet for this subject.</p></div>`; }
+      chapters.forEach(c=>{
+        const weak = state.weakTopics.find(w=>w.chapterId===c.id);
+        const card = document.createElement('div');
+        card.className='card card-pad';
+        card.style.cursor='pointer';
+        card.onclick=()=>navigate('vault',{currentChapterId:c.id, tab:'notes'});
+        card.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+            <b style="font-family:var(--font-display);font-size:15px;">${escapeHtml(c.name)}</b>
+            ${weak?'<span class="badge badge-coral">Weak</span>':''}
+          </div>
+          <div style="font-size:12px;color:var(--ink-muted);">${c.notes ? c.notes.slice(0,70)+(c.notes.length>70?'…':'') : 'No notes yet.'}</div>
+          <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;">
+            <span class="badge badge-primary">${c.flashcards.length} cards</span>
+            <span class="badge badge-blue">${c.quizAttempts||0} quiz attempt${(c.quizAttempts||0)===1?'':'s'}</span>
+          </div>`;
+        grid.appendChild(card);
+      });
+    });
+    return el;
+  }
+
+  // chapter detail
+  const tab = state.vault.tab || 'notes';
+  el.innerHTML = `
+    <button class="btn btn-ghost btn-sm" style="margin-bottom:14px;" onclick="navigate('vault',{currentChapterId:null})">← All chapters</button>
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">${escapeHtml(chapter.subjectName)}</div>
+        <h1 class="page-title">${escapeHtml(chapter.name)}</h1>
+      </div>
+    </div>
+    <div class="tabbar">
+      ${['notes','summary','flashcards','quiz'].map(t=>`<button class="tabbtn ${tab===t?'active':''}" onclick="navigate('vault',{currentChapterId:'${chapter.id}',tab:'${t}'})">${t[0].toUpperCase()+t.slice(1)}</button>`).join('')}
+    </div>
+    <div id="vaultTabBody"></div>
+  `;
+  const body = el.querySelector('#vaultTabBody');
+  if(tab==='notes') body.appendChild(TabNotes(chapter));
+  if(tab==='summary') body.appendChild(TabSummary(chapter));
+  if(tab==='flashcards') body.appendChild(TabFlashcards(chapter));
+  if(tab==='quiz') body.appendChild(TabQuiz(chapter));
+  return el;
+}
+
+function openAddChapterModal(){
+  openModal('Add chapter', `
+    <div class="field"><label>Subject</label>
+      <select id="c-subject"><option value="">— choose or add new below —</option>${subjectOptionsHtml()}</select>
+    </div>
+    <div class="field"><label>Or new subject name</label><input type="text" id="c-newsubject" placeholder="e.g. History"></div>
+    <div class="field"><label>Chapter name</label><input type="text" id="c-name" placeholder="e.g. The French Revolution"></div>
+    <div class="error-text" id="c-error" style="display:none;">Please provide a subject and chapter name.</div>
+  `, `<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitAddChapter()">${ICONS.plus} Add chapter</button>`);
+}
+function submitAddChapter(){
+  const subjectExisting = document.getElementById('c-subject').value;
+  const subjectNew = document.getElementById('c-newsubject').value.trim();
+  const name = document.getElementById('c-name').value.trim();
+  if(!name || (!subjectExisting && !subjectNew)){
+    document.getElementById('c-error').style.display='block'; return;
+  }
+  const subjectId = ensureSubject(subjectNew || (state.subjects.find(s=>s.id===subjectExisting)||{}).name, subjectExisting && !subjectNew ? subjectExisting : null);
+  const subj = state.subjects.find(s=>s.id===subjectId);
+  const ch = ensureChapter(subjectId, subj.name, name);
+  saveState(); closeModal();
+  navigate('vault',{currentChapterId:ch.id, tab:'notes'});
+  toast('Chapter created');
+}
+window.openAddChapterModal = openAddChapterModal;
+window.submitAddChapter = submitAddChapter;
+
+function TabNotes(chapter){
+  const wrap = document.createElement('div');
+  wrap.className='card card-pad';
+  wrap.innerHTML = `
+    <label style="font-size:12.5px;font-weight:700;color:var(--ink-soft);display:block;margin-bottom:8px;">Your notes</label>
+    <textarea id="notesArea" style="width:100%;min-height:240px;padding:14px;border:1.5px solid var(--border);border-radius:14px;line-height:1.6;font-size:13.5px;background:var(--surface);color:var(--ink);" placeholder="Paste or type your revision notes here. Write in full sentences — StudySphere uses these to generate summaries, flashcards and quiz questions.">${escapeHtml(chapter.notes)}</textarea>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px;">
+      <button class="btn btn-primary btn-sm" onclick="saveNotes('${chapter.id}')">Save notes</button>
+    </div>`;
+  return wrap;
+}
+function saveNotes(id){
+  const c = state.chapters.find(x=>x.id===id);
+  c.notes = document.getElementById('notesArea').value;
+  saveState();
+  toast('Notes saved');
+}
+window.saveNotes = saveNotes;
+
+function TabSummary(chapter){
+  const wrap = document.createElement('div');
+  wrap.className='card card-pad';
+  const pts = chapter.summary && chapter.summary.length ? chapter.summary : null;
+  wrap.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <span class="badge badge-demo">Demo Summary — generated from your notes</span>
+      <button class="btn btn-primary btn-sm" onclick="genSummary('${chapter.id}')">${ICONS.sparkle} Generate Summary</button>
+    </div>
+    <div id="summaryBody"></div>
+  `;
+  const body = wrap.querySelector('#summaryBody');
+  if(!chapter.notes.trim()){
+    body.innerHTML = `<div class="empty-state">${ICONS.book.replace('currentColor','var(--ink-muted)')}<p>Add notes first — summaries are generated from what you write in the Notes tab.</p></div>`;
+  } else if(pts){
+    body.innerHTML = `<ul style="padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:13.5px;line-height:1.5;">${pts.map(p=>`<li>${escapeHtml(p)}</li>`).join('')}</ul>`;
+  } else {
+    body.innerHTML = `<p style="font-size:13px;color:var(--ink-muted);">Click "Generate Summary" to turn your notes into concise revision points.</p>`;
+  }
+  return wrap;
+}
+function genSummary(id){
+  const c = state.chapters.find(x=>x.id===id);
+  if(!c.notes.trim()){ toast('Add some notes first'); return; }
+  c.summary = AI_ENGINE.summarize(c.notes);
+  saveState(); render();
+  toast('Summary generated');
+}
+window.genSummary = genSummary;
+
+let fcIndex = 0;
+function TabFlashcards(chapter){
+  const wrap = document.createElement('div');
+  wrap.className='card card-pad';
+  const cards = chapter.flashcards;
+  wrap.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <span class="badge badge-demo">Demo — flashcards generated from your notes</span>
+      <button class="btn btn-primary btn-sm" onclick="genFlashcards('${chapter.id}')">${ICONS.sparkle} Generate Flashcards</button>
+    </div>
+    <div id="fcBody"></div>
+  `;
+  const body = wrap.querySelector('#fcBody');
+  if(!chapter.notes.trim()){
+    body.innerHTML = `<div class="empty-state">${ICONS.book.replace('currentColor','var(--ink-muted)')}<p>Add notes first — flashcards are generated from your Notes tab content.</p></div>`;
+  } else if(cards.length===0){
+    body.innerHTML = `<p style="font-size:13px;color:var(--ink-muted);">Click "Generate Flashcards" to turn your notes into a study deck.</p>`;
+  } else {
+    if(fcIndex>=cards.length) fcIndex=0;
+    body.innerHTML = `
+      <div class="flashcard" id="fcCard" onclick="flipCard()">
+        <span class="fc-tag" id="fcTag">Question · tap to flip</span>
+        <span id="fcText">${escapeHtml(cards[fcIndex].front)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;">
+        <button class="btn btn-outline btn-sm" onclick="fcNav(-1,'${chapter.id}')">← Prev</button>
+        <span style="font-family:var(--font-mono);font-size:12.5px;color:var(--ink-muted);">${fcIndex+1} / ${cards.length}</span>
+        <button class="btn btn-outline btn-sm" onclick="fcNav(1,'${chapter.id}')">Next →</button>
+      </div>`;
+  }
+  return wrap;
+}
+let fcFlipped=false;
+function flipCard(){
+  fcFlipped = !fcFlipped;
+  const chapter = state.chapters.find(c=>c.id===state.vault.currentChapterId);
+  const card = chapter.flashcards[fcIndex];
+  document.getElementById('fcCard').classList.toggle('back', fcFlipped);
+  document.getElementById('fcTag').textContent = fcFlipped ? 'Answer · tap to flip' : 'Question · tap to flip';
+  document.getElementById('fcText').textContent = fcFlipped ? card.back : card.front;
+}
+function fcNav(dir,id){
+  const chapter = state.chapters.find(c=>c.id===id);
+  fcIndex = (fcIndex + dir + chapter.flashcards.length) % chapter.flashcards.length;
+  fcFlipped=false;
+  render();
+}
+function genFlashcards(id){
+  const c = state.chapters.find(x=>x.id===id);
+  if(!c.notes.trim()){ toast('Add some notes first'); return; }
+  c.flashcards = AI_ENGINE.flashcards(c.notes, c.name);
+  fcIndex=0; fcFlipped=false;
+  saveState(); render();
+  toast('Flashcards generated');
+}
+window.flipCard = flipCard;
+window.fcNav = fcNav;
+window.genFlashcards = genFlashcards;
+
+let quizConfig = {count:5, difficulty:'Medium', types:['mcq','tf']};
+let activeQuiz = null;
+let quizAnswers = {};
+function TabQuiz(chapter){
+  const wrap = document.createElement('div');
+  if(activeQuiz && activeQuiz.chapterId===chapter.id && activeQuiz.state==='taking'){
+    wrap.className='';
+    wrap.appendChild(QuizTaking(chapter));
+    return wrap;
+  }
+  if(activeQuiz && activeQuiz.chapterId===chapter.id && activeQuiz.state==='results'){
+    wrap.appendChild(QuizResults(chapter));
+    return wrap;
+  }
+  wrap.className='card card-pad';
+  wrap.innerHTML = `
+    <span class="badge badge-demo" style="margin-bottom:14px;display:inline-block;">Demo — questions generated from your notes</span>
+    ${!chapter.notes.trim() ? `<div class="empty-state">${ICONS.sparkle.replace('currentColor','var(--ink-muted)')}<p>Add notes first — quiz questions are generated from your Notes tab content.</p></div>` : `
+    <div class="field-row">
+      <div class="field"><label>Number of questions</label>
+        <select id="q-count">${[3,5,10].map(n=>`<option value="${n}" ${quizConfig.count===n?'selected':''}>${n}</option>`).join('')}</select>
+      </div>
+      <div class="field"><label>Difficulty</label>
+        <select id="q-diff">${['Easy','Medium','Hard'].map(d=>`<option ${quizConfig.difficulty===d?'selected':''}>${d}</option>`).join('')}</select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Question types</label>
+      <div class="chip-select">
+        <label class="chip-opt ${quizConfig.types.includes('mcq')?'active':''}" onclick="toggleQType('mcq',this)"><input type="checkbox" style="display:none" ${quizConfig.types.includes('mcq')?'checked':''}>Multiple Choice</label>
+        <label class="chip-opt ${quizConfig.types.includes('tf')?'active':''}" onclick="toggleQType('tf',this)"><input type="checkbox" style="display:none" ${quizConfig.types.includes('tf')?'checked':''}>True / False</label>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="startQuiz('${chapter.id}')">${ICONS.bolt} Generate Quiz</button>
+    `}
+  `;
+  return wrap;
+}
+function toggleQType(type, elLabel){
+  if(quizConfig.types.includes(type)){
+    if(quizConfig.types.length===1) return;
+    quizConfig.types = quizConfig.types.filter(t=>t!==type);
+  } else quizConfig.types.push(type);
+  elLabel.classList.toggle('active');
+}
+window.toggleQType = toggleQType;
+function startQuiz(chapterId){
+  const chapter = state.chapters.find(c=>c.id===chapterId);
+  const count = parseInt(document.getElementById('q-count').value);
+  const difficulty = document.getElementById('q-diff').value;
+  quizConfig.count = count; quizConfig.difficulty = difficulty;
+  const questions = AI_ENGINE.generateQuiz(chapter, quizConfig);
+  activeQuiz = { chapterId, state:'taking', questions };
+  quizAnswers = {};
+  render();
+}
+window.startQuiz = startQuiz;
+
+function QuizTaking(chapter){
+  const wrap = document.createElement('div');
+  wrap.className='card card-pad';
+  const qs = activeQuiz.questions;
+  wrap.innerHTML = `<h3 style="font-family:var(--font-display);font-size:17px;margin-bottom:14px;">Quiz · ${escapeHtml(chapter.name)}</h3><div id="qList"></div>
+    <button class="btn btn-primary" style="margin-top:6px;" onclick="submitQuiz('${chapter.id}')">Submit Quiz</button>`;
+  const list = wrap.querySelector('#qList');
+  qs.forEach((q,i)=>{
+    const qd = document.createElement('div');
+    qd.className='quiz-q';
+    if(q.type==='mcq'){
+      qd.innerHTML = `<b style="font-size:13.5px;">${i+1}. ${escapeHtml(q.q)}</b>` +
+        q.options.map(opt=>`<label class="quiz-opt" onclick="setAnswer('${q.id}','${opt.replace(/'/g,"\\'")}')"><input type="radio" name="${q.id}">${escapeHtml(opt)}</label>`).join('');
+    } else {
+      qd.innerHTML = `<b style="font-size:13.5px;">${i+1}. ${escapeHtml(q.q)}</b>
+        <label class="quiz-opt" onclick="setAnswer('${q.id}','true')"><input type="radio" name="${q.id}">True</label>
+        <label class="quiz-opt" onclick="setAnswer('${q.id}','false')"><input type="radio" name="${q.id}">False</label>`;
+    }
+    list.appendChild(qd);
+  });
+  return wrap;
+}
+function setAnswer(qid, val){
+  quizAnswers[qid] = val;
+  document.querySelectorAll(`input[name="${qid}"]`).forEach(inp=>{
+    const label = inp.closest('.quiz-opt');
+    label.classList.toggle('selected', label.textContent.trim().toLowerCase().startsWith(val.toLowerCase()) || (inp.checked));
+  });
+  event.currentTarget.querySelector('input').checked = true;
+  document.querySelectorAll(`[name="${qid}"]`).forEach(()=>{});
+  // simplify selected-state visuals
+  const group = event.currentTarget.parentElement.querySelectorAll('.quiz-opt');
+  group.forEach(g=>g.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+}
+window.setAnswer = setAnswer;
+function submitQuiz(chapterId){
+  const chapter = state.chapters.find(c=>c.id===chapterId);
+  const qs = activeQuiz.questions;
+  const unanswered = qs.filter(q=>quizAnswers[q.id]===undefined);
+  if(unanswered.length){ toast(`Answer all questions first (${unanswered.length} left)`); return; }
+  const outcome = afterQuizSubmit(chapter, qs, quizAnswers);
+  activeQuiz = { chapterId, state:'results', questions:qs, outcome };
+  render();
+}
+window.submitQuiz = submitQuiz;
+
+function QuizResults(chapter){
+  const wrap = document.createElement('div');
+  wrap.className='card card-pad';
+  const { outcome, questions } = activeQuiz;
+  const strong = questions.filter(q=>String(quizAnswers[q.id]).toLowerCase()===String(q.answer).toLowerCase());
+  const weak = questions.filter(q=>String(quizAnswers[q.id]).toLowerCase()!==String(q.answer).toLowerCase());
+  wrap.innerHTML = `
+    <div style="text-align:center;margin-bottom:20px;">
+      <div class="eyebrow">Quiz complete</div>
+      <div style="font-family:var(--font-mono);font-size:38px;font-weight:700;">${outcome.correct}/${outcome.total}</div>
+      <div style="color:var(--ink-muted);font-size:13px;">${outcome.pct}% score</div>
+    </div>
+    <div class="grid grid-2">
+      <div>
+        <b style="font-size:13px;color:var(--mint);">Strong areas</b>
+        <ul style="margin-top:8px;padding-left:18px;font-size:13px;line-height:1.7;">
+          ${strong.length? strong.map(q=>`<li>✓ ${escapeHtml(q.q.slice(0,60))}${q.q.length>60?'…':''}</li>`).join('') : '<li style="color:var(--ink-muted);">None this round</li>'}
+        </ul>
+      </div>
+      <div>
+        <b style="font-size:13px;color:var(--coral);">Needs revision</b>
+        <ul style="margin-top:8px;padding-left:18px;font-size:13px;line-height:1.7;">
+          ${weak.length? weak.map(q=>`<li>⚠️ ${escapeHtml(q.q.slice(0,60))}${q.q.length>60?'…':''}</li>`).join('') : '<li style="color:var(--ink-muted);">None — great work!</li>'}
+        </ul>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:22px;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="reviseWeak('${chapter.id}')">Revise Weak Topics</button>
+      <button class="btn btn-outline" onclick="retakeQuiz('${chapter.id}')">Practice Again</button>
+      <button class="btn btn-ghost" onclick="closeQuiz()">Back to chapter</button>
+    </div>
+  `;
+  return wrap;
+}
+function reviseWeak(chapterId){ activeQuiz=null; navigate('vault',{currentChapterId:chapterId, tab:'notes'}); }
+function retakeQuiz(chapterId){ activeQuiz=null; navigate('vault',{currentChapterId:chapterId, tab:'quiz'}); }
+function closeQuiz(){ activeQuiz=null; render(); }
+window.reviseWeak = reviseWeak;
+window.retakeQuiz = retakeQuiz;
+window.closeQuiz = closeQuiz;
+
+/* ================= PROGRESS ================= */
+function ViewProgress(){
+  const el = document.createElement('div');
+  const totalTasks = state.planTasks.length;
+  const doneTasks = state.planTasks.filter(t=>t.completed).length;
+  const overallPct = totalTasks ? Math.round((doneTasks/totalTasks)*100) : 0;
+  const streak = computeStreak();
+
+  el.innerHTML = `
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">Progress</div>
+        <h1 class="page-title">Your learning progress</h1>
+        <p class="page-sub">A honest snapshot — figures only appear once you've actually studied, quizzed, or planned.</p>
+      </div>
+    </div>
+    <div class="grid grid-4" style="margin-bottom:22px;">
+      <div class="card card-pad" style="text-align:center;">
+        <div style="font-family:var(--font-mono);font-size:26px;">${totalTasks?overallPct+'%':'—'}</div>
+        <div style="font-size:11.5px;color:var(--ink-muted);font-weight:700;margin-top:4px;">Overall completion</div>
+      </div>
+      <div class="card card-pad" style="text-align:center;">
+        <div style="font-family:var(--font-mono);font-size:26px;">${doneTasks}/${totalTasks}</div>
+        <div style="font-size:11.5px;color:var(--ink-muted);font-weight:700;margin-top:4px;">Sessions completed</div>
+      </div>
+      <div class="card card-pad" style="text-align:center;">
+        <div style="font-family:var(--font-mono);font-size:26px;">${state.quizResults.length?Math.round(state.quizResults.reduce((a,r)=>a+r.pct,0)/state.quizResults.length)+'%':'—'}</div>
+        <div style="font-size:11.5px;color:var(--ink-muted);font-weight:700;margin-top:4px;">Quiz average</div>
+      </div>
+      <div class="card card-pad" style="text-align:center;">
+        <div style="font-family:var(--font-mono);font-size:26px;color:var(--coral);">${streak}</div>
+        <div style="font-size:11.5px;color:var(--ink-muted);font-weight:700;margin-top:4px;">Day streak</div>
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="align-items:start;">
+      <div class="card card-pad">
+        <h3 style="font-family:var(--font-display);font-size:16.5px;margin-bottom:14px;">Subject progress</h3>
+        <div id="subjBars"></div>
+      </div>
+      <div class="card card-pad">
+        <h3 style="font-family:var(--font-display);font-size:16.5px;margin-bottom:14px;">Quiz scores</h3>
+        <div id="quizList"></div>
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="margin-top:18px;">
+      <div class="card card-pad">
+        <h3 style="font-family:var(--font-display);font-size:16.5px;margin-bottom:12px;color:var(--mint);">Strong topics</h3>
+        <div id="strongList"></div>
+      </div>
+      <div class="card card-pad">
+        <h3 style="font-family:var(--font-display);font-size:16.5px;margin-bottom:12px;color:var(--coral);">Weak topics</h3>
+        <div id="weakList"></div>
+      </div>
+    </div>
+  `;
+
+  const subjBars = el.querySelector('#subjBars');
+  if(state.subjects.length===0){ subjBars.innerHTML = `<p style="font-size:12.5px;color:var(--ink-muted);">No subjects yet.</p>`; }
+  else state.subjects.forEach(s=>{
+    const ts = state.planTasks.filter(t=>t.subjectId===s.id);
+    const d = ts.filter(t=>t.completed).length;
+    const pct = ts.length ? Math.round((d/ts.length)*100) : 0;
+    const row = document.createElement('div');
+    row.style.marginBottom='12px';
+    row.innerHTML = `<div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;margin-bottom:4px;">
+        <span style="display:flex;align-items:center;gap:6px;"><span class="dot" style="background:${s.color}"></span>${escapeHtml(s.name)}</span><span>${ts.length?pct+'%':'no tasks'}</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%;background:${s.color}"></div></div>`;
+    subjBars.appendChild(row);
+  });
+
+  const quizList = el.querySelector('#quizList');
+  if(state.quizResults.length===0){ quizList.innerHTML = `<p style="font-size:12.5px;color:var(--ink-muted);">No quiz data yet.</p>`; }
+  else quizList.innerHTML = state.quizResults.slice(0,8).map(r=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;">
+      <div><b>${escapeHtml(r.chapterName)}</b><div style="font-size:11px;color:var(--ink-muted);">${escapeHtml(r.subjectName)} · ${fmtDate(r.date)}</div></div>
+      <span class="badge ${r.pct>=70?'badge-mint':'badge-coral'}">${r.score}/${r.total}</span>
+    </div>`).join('');
+
+  const strongList = el.querySelector('#strongList');
+  const strongChapters = state.chapters.filter(c=> (c.quizAttempts||0)>0 && !state.weakTopics.some(w=>w.chapterId===c.id));
+  strongList.innerHTML = strongChapters.length ? strongChapters.map(c=>`<div class="badge badge-mint" style="margin:0 6px 6px 0;">✓ ${escapeHtml(c.name)}</div>`).join('') : `<p style="font-size:12.5px;color:var(--ink-muted);">No quiz data yet.</p>`;
+
+  const weakList = el.querySelector('#weakList');
+  weakList.innerHTML = state.weakTopics.length ? state.weakTopics.map(w=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <span class="badge badge-coral">⚠️ ${escapeHtml(w.chapterName)}</span>
+      <button class="btn btn-outline btn-sm" onclick="openWeakPractice('${w.chapterId}')">Practice</button>
+    </div>`).join('') : `<p style="font-size:12.5px;color:var(--ink-muted);">No weak topics detected yet.</p>`;
+
+  return el;
+}
+
+/* ================= SETTINGS ================= */
+function ViewSettings(){
+  const el = document.createElement('div');
+  const p = state.profile;
+  el.innerHTML = `
+    <div class="page-head">
+      <div><div class="eyebrow">Settings</div><h1 class="page-title">Your profile & preferences</h1></div>
+    </div>
+    <div class="grid grid-2" style="align-items:start;">
+      <div class="card card-pad">
+        <h3 style="font-family:var(--font-display);font-size:16px;margin-bottom:14px;">Profile</h3>
+        <div class="field"><label>Student name</label><input type="text" id="s-name" value="${escapeHtml(p.name)}" placeholder="Your name"></div>
+        <div class="field"><label>Class / Grade</label>
+          <select id="s-grade">${Array.from({length:12},(_,i)=>i+1).map(g=>`<option value="${g}" ${String(g)===String(p.grade)?'selected':''}>Grade ${g}</option>`).join('')}</select>
+        </div>
+        <div class="field"><label>Daily available study time (minutes)</label><input type="number" id="s-time" min="30" step="10" value="${p.dailyTime}"></div>
+        <div class="field">
+          <label>Subjects</label>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            ${state.subjects.length ? state.subjects.map(s=>`<span class="badge" style="background:${s.color}22;color:${s.color};">${escapeHtml(s.name)}</span>`).join('') : '<span style="font-size:12px;color:var(--ink-muted);">None yet — add one from StudySense.</span>'}
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="saveSettings()">Save changes</button>
+      </div>
+
+      <div>
+        <div class="card card-pad" style="margin-bottom:16px;">
+          <h3 style="font-family:var(--font-display);font-size:16px;margin-bottom:14px;">Preferences</h3>
+          <div class="field" style="display:flex;justify-content:space-between;align-items:center;">
+            <label style="margin:0;">Notifications</label>
+            <input type="checkbox" id="s-notif" ${p.notifications?'checked':''} style="width:18px;height:18px;">
+          </div>
+          <div class="field"><label>Theme</label>
+            <div class="chip-select">
+              <button type="button" class="chip-opt ${p.theme==='light'?'active':''}" onclick="setTheme('light')">Light</button>
+              <button type="button" class="chip-opt ${p.theme==='dark'?'active':''}" onclick="setTheme('dark')">Dark</button>
+            </div>
+          </div>
+        </div>
+        <div class="card card-pad" style="margin-bottom:16px;">
+          <h3 style="font-family:var(--font-display);font-size:16px;margin-bottom:8px;">Privacy</h3>
+          <p style="font-size:12.5px;color:var(--ink-muted);line-height:1.6;">StudySphere AI only uses the information you choose to enter — your name, subjects, notes and quiz results. It does not access outside academic records, and nothing you type is shared beyond this device's local storage. AI features run in a clearly labelled Demo Mode using simple heuristics on your own notes, not a live model with access to your data.</p>
+        </div>
+        <div class="card card-pad" style="border-color:var(--coral-tint);">
+          <h3 style="font-family:var(--font-display);font-size:16px;margin-bottom:8px;color:var(--coral);">Danger zone</h3>
+          <p style="font-size:12.5px;color:var(--ink-muted);margin-bottom:12px;">Clears quiz results, weak topics, streak and task-completion status. Subjects and notes are kept.</p>
+          <button class="btn btn-danger btn-sm" onclick="confirmModal('Reset progress','This will clear your quiz history, weak topics and streak, and mark tasks incomplete. This can\\'t be undone. Continue?', resetProgress)">Reset progress</button>
+        </div>
+      </div>
+    </div>
+  `;
+  return el;
+}
+function setTheme(t){ state.profile.theme=t; saveState(); render(); }
+function saveSettings(){
+  state.profile.name = document.getElementById('s-name').value.trim();
+  state.profile.grade = document.getElementById('s-grade').value;
+  state.profile.dailyTime = parseInt(document.getElementById('s-time').value) || 120;
+  state.profile.notifications = document.getElementById('s-notif').checked;
+  state.profile.onboarded = true;
+  saveState(); render();
+  toast('Settings saved');
+}
+window.setTheme = setTheme;
+window.saveSettings = saveSettings;
+window.resetProgress = resetProgress;
+
+/* ---------------- init ---------------- */
+render();
+</script>
+</body>
+</html>
